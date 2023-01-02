@@ -1,18 +1,28 @@
 import {Button, Form, Input} from 'antd';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState ,useEffect} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addPost } from '../reducers/post';
+import { ADD_POST_REQUEST } from '../reducers/post';
 
 const PostForm = ()=>{
-    const {imagePaths} = useSelector((state)=> state.post);
+    const { imagePaths, addPostLoading, addPostDone } = useSelector((state) => state.post);
     const [text, setText] = useState('');
     const dispatch = useDispatch();
     const imageInput = useRef();
 
-    const onSubmit = useCallback(()=>{
-        dispatch(addPost);
-        setText('');
-    }, []);
+    useEffect(() => {
+        if (addPostDone) {
+          setText('');
+        }
+      }, [addPostDone]);
+
+      
+    const onSubmitForm = useCallback(() => {
+        dispatch({
+          type: ADD_POST_REQUEST,
+          data: text,
+        });
+      }, [text]);
     const onChangeText = useCallback((e)=>{
         setText(e.target.value);
  
@@ -23,7 +33,7 @@ const PostForm = ()=>{
     }, [imageInput.current]);
 
     return(
-        <Form style={{margin:'10px 0 20px'}} encType="multipart/form-data" onFinish={onSubmit}>
+        <Form style={{margin:'10px 0 20px'}} encType="multipart/form-data" onFinish={onSubmitForm}>
             <Input.TextArea value={text} onChange={onChangeText} maxLength={140} placeholder="무슨일 있었냐"/>
             <div>
                 <input type="file" multiple hidden innerRef={imageInput}  style={{display:'none'}}/>

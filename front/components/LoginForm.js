@@ -4,8 +4,8 @@ import Link from 'next/link';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import useInput from '../hooks/useInput';
-import { useDispatch } from 'react-redux';
-import {loginAction} from '../reducers/user'
+import { useDispatch, useSelector } from 'react-redux';
+import { LOG_IN_REQUEST } from '../reducers/user';
 
 const ButtonWrapper = styled.div`
     margin-top: 10px;
@@ -14,8 +14,8 @@ const ButtonWrapper = styled.div`
 const LoginForm = () =>{
 // const LoginForm = ({setIsLoggedIn}) =>{
     const dispatch = useDispatch();
-
-    const [id, onChangeId] = useInput('');
+    const { logInLoading } = useSelector((state) => state.user);
+    const [email, onChangeEmail] = useInput('');
     const [password, onChangePassword] = useInput('');
     
     // const [password, setPassword] = useState('');
@@ -24,10 +24,12 @@ const LoginForm = () =>{
     // }, []);
 
     const onSubmitForm = useCallback(()=>{
-        console.log(id, password);
-        dispatch(loginAction({id,password}));
-        // setIsLoggedIn(true);
-    }, [id, password]);
+        console.log(email, password);
+        dispatch({
+          type: LOG_IN_REQUEST,
+          data: { email, password },
+        });
+    }, [email, password]);
 
     
     const FormWrapper = styled(Form)`
@@ -37,9 +39,9 @@ const LoginForm = () =>{
     return(
         <FormWrapper onFinish={onSubmitForm}>
             <div>
-                <label htmlFor="user-id">아이디</label>
+                <label htmlFor="user-email">이메일</label>
                 < br/>
-                <Input name="user-id" value={id} onChange={onChangeId} required />
+                <Input name="user-email"  type='email' value={email} onChange={onChangeEmail} required />
             </div>
             <div>
                 <label htmlFor="user-password">비밀번호</label>
@@ -48,7 +50,7 @@ const LoginForm = () =>{
             </div>
             {/* <div style={{marginTop : '10px'}}> */}
             <ButtonWrapper>
-                <Button type='primary' htmlType='submit' loading={false}>로그인</Button>
+                <Button type='primary' htmlType='submit'  loading={logInLoading}>로그인</Button>
                 <Link href="/signup"><a><Button>회원가입</Button></a></Link>
             </ButtonWrapper>
         </FormWrapper>

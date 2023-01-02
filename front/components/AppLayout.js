@@ -29,9 +29,9 @@ const Global = createGlobalStyle`
 const AppLayout = ({children}) => {
     
     // const [isLoggedIn, setIsLoggedIn] = useState(false); //리덕스 추가로 이제 사용하지 않아도 되는 코드이다.
-    const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+    // const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
     // const {isLoggedIn} = useSelector((state) => state.user);
-
+    const { me } = useSelector((state) => state.user);
     return(
     <div>
         <Global />
@@ -56,7 +56,7 @@ const AppLayout = ({children}) => {
         <Row gutter={8}>
             <Col xs={24} md={6}>
                 {/* {isLoggedIn ? <UserProfile setIsLoggedIn={setIsLoggedIn}/> : <LoginForm setIsLoggedIn={setIsLoggedIn}/>} */}
-                {isLoggedIn ? <UserProfile /> : <LoginForm />}
+                {me ? <UserProfile /> : <LoginForm />}
             </Col>
             <Col xs={24} md={12}>{children}</Col>
             <Col xs={24} md={6}>
